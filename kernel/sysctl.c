@@ -133,7 +133,7 @@ static unsigned long long_max = LONG_MAX;
 static int one_hundred __read_only = 100;
 #ifdef CONFIG_PRINTK
 static int ten_thousand __read_only = 10000;
-#endif0
+#endif
 #ifdef CONFIG_SCHED_HMP
 static int one_thousand __read_only = 1000;
 static int max_freq_reporting_policy = FREQ_REPORT_INVALID_POLICY - 1;
