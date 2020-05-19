@@ -27,7 +27,11 @@
 #include <linux/ioctl.h>
 #include <linux/security.h>
 
-int sysctl_unprivileged_userfaultfd __read_mostly = 0;
+#ifdef CONFIG_USERFAULTFD_UNPRIVILEGED
+int sysctl_unprivileged_userfaultfd __read_mostly = 1;
+#else
+int sysctl_unprivileged_userfaultfd __read_mostly;
+#endif
 
 static struct kmem_cache *userfaultfd_ctx_cachep __read_mostly;
 
