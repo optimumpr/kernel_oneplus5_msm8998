@@ -61,8 +61,8 @@ static DECLARE_BITMAP(media_devnode_nums, MEDIA_NUM_DEVICES);
 static void media_devnode_release(struct device *cd)
 {
 	struct media_devnode *devnode = to_media_devnode(cd);
-	mutex_lock(&media_devnode_lock);
 
+	mutex_lock(&media_devnode_lock);
 	/* Mark device node number as free */
 	clear_bit(devnode->minor, media_devnode_nums);
 	mutex_unlock(&media_devnode_lock);
@@ -248,7 +248,7 @@ int __must_check media_devnode_register(struct media_device *mdev,
 	if (minor == MEDIA_NUM_DEVICES) {
 		mutex_unlock(&media_devnode_lock);
 		pr_err("could not get a free minor\n");
-		kfree(devnode)
+		kfree(devnode);
 		return -ENFILE;
 	}
 
@@ -302,17 +302,7 @@ cdev_add_error:
 	return ret;
 }
 
-/**
- * media_devnode_unregister - unregister a media device node
- * @devnode: the device node to unregister
- *
- * This unregisters the passed device. Future open calls will be met with
- * errors.
- *
- * This function can safely be called if the device node has never been
- * registered or has already been unregistered.
- */
-void media_devnode_unregister(struct media_devnode *devnode)
+void media_devnode_unregister_prepare(struct media_devnode *devnode)
 {
 	/* Check if devnode was ever registered at all */
 	if (!media_devnode_is_registered(devnode))
@@ -320,6 +310,21 @@ void media_devnode_unregister(struct media_devnode *devnode)
 
 	mutex_lock(&media_devnode_lock);
 	clear_bit(MEDIA_FLAG_REGISTERED, &devnode->flags);
+	mutex_unlock(&media_devnode_lock);
+}
+
+/**
+ * media_devnode_unregister - unregister a media device node
+ * @devnode: the device node to unregister
+ *
+ * This unregisters the passed device. Future open calls will be met with
+ * errors.
+ *
+ * Should be called after media_devnode_unregister_prepare()
+ */
+void media_devnode_unregister(struct media_devnode *devnode)
+{
+	mutex_lock(&media_devnode_lock);
 	/* Delete the cdev on this minor as well */
 	cdev_del(&devnode->cdev);
 	mutex_unlock(&media_devnode_lock);
