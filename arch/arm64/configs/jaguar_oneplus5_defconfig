@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/arm64 4.4.153 Kernel Configuration
+# Linux/arm64 4.4.228 Kernel Configuration
 #
 CONFIG_ARM64=y
 CONFIG_64BIT=y
@@ -2947,6 +2947,7 @@ CONFIG_FB_CFB_IMAGEBLIT=y
 # CONFIG_FB_MACMODES is not set
 # CONFIG_FB_BACKLIGHT is not set
 CONFIG_FB_MODE_HELPERS=y
+CONFIG_FLICKER_FREE=y
 # CONFIG_FB_TILEBLITTING is not set
 
 #
